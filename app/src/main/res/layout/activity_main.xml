@@ -16,6 +16,7 @@
         android:textSize="20dp"
         android:gravity="center"/>
     <ListView
+        android:id="@+id/lvEvents"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

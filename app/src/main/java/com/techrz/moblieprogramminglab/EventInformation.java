@@ -2,6 +2,7 @@ package com.techrz.moblieprogramminglab;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class EventInformation extends AppCompatActivity {
 
@@ -24,6 +26,7 @@ public class EventInformation extends AppCompatActivity {
     private RadioButton rdOutDoor;
     private RadioButton rdOnline;
     private TextView errorMessage;
+    private String existingKey = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,48 @@ public class EventInformation extends AppCompatActivity {
         rdOnline = findViewById(R.id.rdOnline);
         errorMessage = findViewById(R.id.errorMessage);
 
+        Intent i = getIntent();
+        existingKey = i.getStringExtra("EventKey");
+        if(existingKey != null && !existingKey.isEmpty()) {
+            initializeFormWithExistingData(existingKey);
+        }
+
+    }
+
+    private void initializeFormWithExistingData(String eventKey){
+
+        String value = Util.getInstance().getValueByKey(this, eventKey);
+        System.out.println("Key: " + eventKey + "; Value: "+value);
+
+        if(value != null) {
+            String[] fieldValues = value.split("-::-");
+            String name = fieldValues[0];
+            String place = fieldValues[1];
+            String eventType = fieldValues[2];
+            String dateTime = fieldValues[3];
+            String capacity = fieldValues[4];
+            String budget = fieldValues[5];
+            String email = fieldValues[6];
+            String phone = fieldValues[7];
+            String description = fieldValues[8];
+            etName.setText(name);
+            etPlace.setText(place);
+            if(eventType.equals("Indoor")){
+                rdIndoor.setChecked(true);
+            }
+            else if(eventType.equals("OutDoor")){
+                rdOutDoor.setChecked(true);
+            }
+            else{
+                rdOnline.setChecked(true);
+            }
+            etdateTime.setText(dateTime);
+            etCapacity.setText(capacity);
+            etBudget.setText(budget);
+            etEmail.setText(email);
+            etPhone.setText(phone);
+            etDescription.setText(description);
+        }
     }
 
     void save(){
@@ -66,18 +111,22 @@ public class EventInformation extends AppCompatActivity {
         }
 
         boolean indoorIsChecked = rdIndoor.isChecked();
+        String checkedOne="";
         if(indoorIsChecked== true){
             System.out.println("Indoor checked ");
+            checkedOne = "Indoor";
         }
 
         boolean outDoorIsChecked = rdOutDoor.isChecked();
         if(outDoorIsChecked== true){
             System.out.println("Outdoor checked ");
+            checkedOne = "OutDoor";
         }
 
         boolean onlineIsChecked = rdOnline.isChecked();
         if(onlineIsChecked== true){
             System.out.println("Online checked ");
+            checkedOne = "Online";
         }
 
         String dateTime = etdateTime.getText().toString().trim();
@@ -126,6 +175,18 @@ public class EventInformation extends AppCompatActivity {
 
         System.out.println(error);
         errorMessage.setText(error);
+        System.out.println("error"+ error);
+        if(error==""){
+            String key=name+"-::-"+dateTime;
+            if(existingKey != null){
+                key = existingKey;
+            }
+            String value = name+"-::-"+Place+"-::-"+checkedOne+"-::-"+dateTime+"-::-"+Capacity+"-::-"+Budget+"-::-"+Email+"-::-"+Phone+"-::-"+Description;
+            Util.getInstance().setKeyValue(this, key, value);
+            Toast.makeText(this, "Event information has been saved successfully", Toast.LENGTH_LONG).show();
+            finish();
+            errorMessage.setText("Information has been saved successfully");
+        }
     }
 
     public static boolean isValidEmail(CharSequence target) {
