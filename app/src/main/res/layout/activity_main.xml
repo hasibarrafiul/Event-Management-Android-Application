@@ -54,6 +54,15 @@
             android:backgroundTint="#ffdd00"
             android:textColor="@color/black"/>
 
+        <Button
+            android:id="@+id/loadData"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Load"
+            android:textColor="@color/black"
+            android:backgroundTint="#ffdd00" />
+
     </LinearLayout>
 
 </LinearLayout>

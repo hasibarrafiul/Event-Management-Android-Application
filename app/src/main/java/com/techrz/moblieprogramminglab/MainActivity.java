@@ -33,6 +33,9 @@ public class MainActivity extends Activity {
         Button history = findViewById(R.id.history);
         history.setOnClickListener(v->history());
 
+        Button load = findViewById(R.id.loadData);
+        load.setOnClickListener(v->loadAttendenceList());
+
         findViewById(R.id.exit).setOnClickListener(v->finish());
         lvEvents = findViewById(R.id.lvEvents);
         loadData();
@@ -149,5 +152,10 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         System.out.println("@mainActivity onDestroy");
+    }
+
+    void loadAttendenceList(){
+        Intent intent = new Intent(this, MyAttendanceActivity.class);
+        startActivity(intent);
     }
 }
