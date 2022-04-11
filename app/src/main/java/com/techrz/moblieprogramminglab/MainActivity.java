@@ -1,6 +1,8 @@
 package com.techrz.moblieprogramminglab;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -75,10 +77,31 @@ public class MainActivity extends Activity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 //String message = "Do you want to delete event - "+events[position].name +" ?";
                 String message = "Do you want to delete event - "+events.get(position).name +" ?";
-                System.out.println(message);
+                showDialog(message, "Delete Event", events.get(position).key);
                 return true;
+
             }
         });
+    }
+    public void showDialog(String message, String title, String key){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message);
+        builder.setTitle(title);
+
+        builder.setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                Util.getInstance().deleteByKey(MainActivity.this, key);
+                dialog.cancel();
+                loadData();
+                adapter.notifyDataSetChanged();
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 
